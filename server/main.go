@@ -14,19 +14,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dbContextProvider, err := db.Init(config.Mongo.URL, config.Mongo.User, config.Mongo.Password)
+	SessionProvider, err := db.Init(config.Mongo.URL, config.Mongo.User, config.Mongo.Password)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	dbContext := dbContextProvider.GetSession()
+	Session := SessionProvider.GetSession()
 
-	err = dbContext.AddAnnouncement(models.NewAnnouncement("this is a test announcement"))
+	err = Session.AddAnnouncement(models.NewAnnouncement("this is a test announcement"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	res, err := dbContext.GetAnnouncements()
+	res, err := Session.GetAnnouncements()
 	if err != nil {
 		log.Fatal(err)
 	}
