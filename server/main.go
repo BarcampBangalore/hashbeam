@@ -5,6 +5,7 @@ import (
 	"log"
 	"server/conf"
 	"server/db"
+	"server/models"
 )
 
 func main() {
@@ -19,5 +20,16 @@ func main() {
 	}
 
 	dbContext := dbContextProvider.GetContext()
-	fmt.Println(dbContext.GetTweets())
+
+	err = dbContext.AddAnnouncement(models.NewAnnouncement("this is a test announcement"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res, err := dbContext.GetAnnouncements()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%+v\n", res)
 }
