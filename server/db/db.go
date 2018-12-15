@@ -7,31 +7,31 @@ import (
 	"server/models"
 )
 
-func Init(mongoURL string, user string, password string) (*ContextProvider, error) {
+func Init(mongoURL string, user string, password string) (*SessionProvider, error) {
 	rootSession, err := mgo.Dial("mongodb://" + user + ":" + password + "@" + mongoURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %v", err)
 	}
 
-	return &ContextProvider{rootSession}, nil
+	return &SessionProvider{rootSession}, nil
 }
 
-type ContextProvider struct {
+type SessionProvider struct {
 	rootSession *mgo.Session
 }
 
-func (p *ContextProvider) GetContext() *Context {
-	return &Context{p.rootSession.Copy()}
+func (s *SessionProvider) GetSession() *Session {
+	return &Session{s.rootSession.Copy()}
 }
 
-type Context struct {
+type Session struct {
 	session *mgo.Session
 }
 
-func (ctx *Context) GetAnnouncements() ([]models.Announcement, error) {
+func (s *Session) GetAnnouncements() ([]models.Announcement, error) {
 	var result []models.Announcement
 
-	err := ctx.session.DB("").C("announcements").Find(bson.M{}).All(&result)
+	err := s.session.DB("").C("announcements").Find(bson.M{}).All(&result)
 	if err != nil {
 		return nil, fmt.Errorf("GetAnnouncements failed: %v", err)
 	}
@@ -39,6 +39,6 @@ func (ctx *Context) GetAnnouncements() ([]models.Announcement, error) {
 	return result, nil
 }
 
-func (ctx *Context) AddAnnouncement(announcement models.Announcement) error {
-	return ctx.session.DB("").C("announcements").Insert(announcement)
+func (s *Session) AddAnnouncement(announcement models.Announcement) error {
+	return s.session.DB("").C("announcements").Insert(announcement)
 }

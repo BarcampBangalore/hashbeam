@@ -19,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dbContext := dbContextProvider.GetContext()
+	dbContext := dbContextProvider.GetSession()
 
 	err = dbContext.AddAnnouncement(models.NewAnnouncement("this is a test announcement"))
 	if err != nil {
