@@ -10,7 +10,7 @@ import (
 func (s *Session) GetAnnouncements() ([]models.Announcement, error) {
 	var result []models.Announcement
 
-	err := s.session.DB("").C("announcements").Find(bson.M{}).All(&result)
+	err := s.session.DB("").C("announcements").Find(bson.M{}).Sort("-time").All(&result)
 	if err != nil {
 		return nil, fmt.Errorf("GetAnnouncements failed: %v", err)
 	}
