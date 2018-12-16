@@ -10,10 +10,12 @@
       { "username": "admin2", "password": "password2" }
     ]
   },
-  "mongo": {
-    "url": "someurl:someport/somedatabase",
-    "user": "bcb19",
-    "password": "bigmansathyabhat1"
+  "mysql": {
+    "host": "127.0.0.1",
+    "port": "3306",
+    "user": "root",
+    "password": "pass",
+    "database": "bcb"
   },
   "firebase": {
     "topicName": "sometopicname",
