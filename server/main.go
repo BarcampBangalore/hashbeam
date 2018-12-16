@@ -29,12 +29,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer func() {
-		err = dbCtx.DB.Close()
-		if err != nil {
-			log.Fatalf("closing database failed: %v", err)
-		}
-	}()
+	defer dbCtx.DB.Close()
 
 	err = dbCtx.SetupTables()
 	if err != nil {
