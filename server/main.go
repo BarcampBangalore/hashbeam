@@ -27,5 +27,5 @@ func main() {
 	}
 
 	a := api.NewAPI(*sessionProvider, *config)
-	log.Fatal(http.ListenAndServe(":8080", logRequestsMiddleware(a.Mux)))
+	log.Fatal(http.ListenAndServe(":8080", logRequestsMiddleware(a.Router)))
 }
