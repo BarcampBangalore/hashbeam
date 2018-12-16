@@ -9,15 +9,15 @@ import (
 )
 
 type API struct {
-	dbSessionProvider db.SessionProvider
-	config            conf.Config
-	Router            *httprouter.Router
+	database *db.DatabaseContext
+	config   conf.Config
+	Router   *httprouter.Router
 }
 
-func NewAPI(dbSessionProvider db.SessionProvider, config conf.Config) *API {
+func NewAPI(database *db.DatabaseContext, config conf.Config) *API {
 	router := httprouter.New()
 
-	api := &API{dbSessionProvider, config, router}
+	api := &API{database, config, router}
 
 	api.Router.GET("/announcements", api.getAnnouncements())
 	api.Router.POST("/announcements", api.createAnnouncement())

@@ -15,9 +15,9 @@ func (a *API) getAnnouncements() httprouter.Handle {
 		var err error
 
 		if ps.ByName("all") == "1" {
-			results, err = a.dbSessionProvider.GetSession().GetAnnouncements()
+			results, err = a.database.GetAnnouncements()
 		} else {
-			results, err = a.dbSessionProvider.GetSession().GetAnnouncementsByDate(time.Now())
+			results, err = a.database.GetAnnouncementsByDate(time.Now())
 		}
 
 		if err != nil {
@@ -48,8 +48,8 @@ func (a *API) createAnnouncement() httprouter.Handle {
 			return
 		}
 
-		announcement := models.NewAnnouncement(requestBody.Message)
-		err = a.dbSessionProvider.GetSession().SaveAnnouncement(announcement)
+		announcement := models.Announcement{ID: 0, Time: time.Now(), Message: requestBody.Message}
+		savedAnnouncement, err := a.database.SaveAnnouncement(announcement)
 		if err != nil {
 			log.Printf("HTTP handler createAnnouncement saving announcement to db failed: %v", err)
 			http.Error(w, "server error", http.StatusInternalServerError)
@@ -57,7 +57,7 @@ func (a *API) createAnnouncement() httprouter.Handle {
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		err = json.NewEncoder(w).Encode(announcement)
+		err = json.NewEncoder(w).Encode(savedAnnouncement)
 		if err != nil {
 			log.Printf("HTTP handler saveAnnouncement marshaling response to JSON failed: %v", err)
 			http.Error(w, "server error", http.StatusInternalServerError)

@@ -21,11 +21,26 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sessionProvider, err := db.Init(config.Mongo.URL, config.Mongo.User, config.Mongo.Password)
+	connString := config.MySQL.User + ":" + config.MySQL.Password + "@(" +
+		config.MySQL.Host + ":" + config.MySQL.Port + ")/" +
+		config.MySQL.Database + "?parseTime=true"
+
+	dbCtx, err := db.Init(connString)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer func() {
+		err = dbCtx.DB.Close()
+		if err != nil {
+			log.Fatalf("closing database failed: %v", err)
+		}
+	}()
 
-	a := api.NewAPI(*sessionProvider, *config)
+	err = dbCtx.SetupTables()
+	if err != nil {
+		log.Fatalf("couldn't ensure database schema (create table if not exists failed): %v", err)
+	}
+
+	a := api.NewAPI(dbCtx, *config)
 	log.Fatal(http.ListenAndServe(":8080", logRequestsMiddleware(a.Router)))
 }

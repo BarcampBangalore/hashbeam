@@ -2,44 +2,48 @@ package db
 
 import (
 	"fmt"
-	"github.com/globalsign/mgo/bson"
 	"server/models"
 	"time"
 )
 
-func (s *Session) GetAnnouncements() ([]models.Announcement, error) {
-	var result []models.Announcement
+func (ctx *DatabaseContext) GetAnnouncements() ([]models.Announcement, error) {
+	result := make([]models.Announcement, 0)
 
-	err := s.session.DB("").C("announcements").Find(bson.M{}).Sort("-time").All(&result)
+	// This loads the entire dataset into memory at once so it will fail if the dataset it too large, but unlikely
+	// to happen given the context of this app.
+	err := ctx.DB.Select(&result, "SELECT `id`, `datetime`, `message` FROM `announcements` ORDER BY `datetime` DESC")
 	if err != nil {
-		return nil, fmt.Errorf("GetAnnouncements failed: %v", err)
+		return nil, fmt.Errorf("db GetAnnouncements failed: %v", err)
 	}
-
 	return result, nil
 }
 
-func (s *Session) GetAnnouncementsByDate(date time.Time) ([]models.Announcement, error) {
+func (ctx *DatabaseContext) GetAnnouncementsByDate(date time.Time) ([]models.Announcement, error) {
 	year, month, day := date.Date()
 
 	st := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 	et := st.Add(24 * time.Hour)
 
-	var result []models.Announcement
+	result := make([]models.Announcement, 0)
 
-	err := s.session.DB("").C("announcements").Find(bson.M{
-		"time": bson.M{
-			"$gt": st,
-			"$lt": et,
-		},
-	}).Sort("-time").All(&result)
-
+	err := ctx.DB.Select(&result, "SELECT `id`, `datetime`, `message` FROM `announcements` WHERE (`datetime` BETWEEN ? AND ?) ORDER BY `datetime` DESC", st, et)
 	if err != nil {
-		return nil, fmt.Errorf("GetAnnouncementsByDate failed: %v", err)
+		return nil, fmt.Errorf("db GetAnnouncementsByDate failed: %v", err)
 	}
 
 	return result, nil
 }
 
-func (s *Session) SaveAnnouncement(announcement models.Announcement) error {
-	return s.session.DB("").C("announcements").Insert(announcement)
+func (ctx *DatabaseContext) SaveAnnouncement(announcement models.Announcement) (*models.Announcement, error) {
+	result, err := ctx.DB.Exec("INSERT INTO `announcements` (`datetime`, `message`) VALUES (?, ?)", announcement.Time, announcement.Message)
+	if err != nil {
+		return nil, fmt.Errorf("db SaveAnnouncement failed: %v", err)
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, nil
+	}
+
+	return &models.Announcement{ID: id, Time: announcement.Time, Message: announcement.Message}, nil
 }

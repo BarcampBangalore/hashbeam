@@ -2,26 +2,35 @@ package db
 
 import (
 	"fmt"
-	"github.com/globalsign/mgo"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
+	"io/ioutil"
 )
 
-func Init(mongoURL string, user string, password string) (*SessionProvider, error) {
-	rootSession, err := mgo.Dial("mongodb://" + user + ":" + password + "@" + mongoURL)
+func Init(connString string) (*DatabaseContext, error) {
+	database, err := sqlx.Open("mysql", connString)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %v", err)
 	}
 
-	return &SessionProvider{rootSession}, nil
+	return &DatabaseContext{database}, nil
 }
 
-type SessionProvider struct {
-	rootSession *mgo.Session
+type DatabaseContext struct {
+	DB *sqlx.DB
 }
 
-func (s *SessionProvider) GetSession() *Session {
-	return &Session{s.rootSession.Copy()}
-}
+func (ctx *DatabaseContext) SetupTables() error {
+	sqlFile, err := ioutil.ReadFile("./db/schema.sql")
+	if err != nil {
+		return fmt.Errorf("failed to read db/schema.sql: %v", err)
+	}
 
-type Session struct {
-	session *mgo.Session
+	sqlString := string(sqlFile)
+	_, err = ctx.DB.Exec(sqlString)
+	if err != nil {
+		return fmt.Errorf("failed to execute table setup SQL: %v", err)
+	}
+
+	return nil
 }

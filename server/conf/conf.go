@@ -23,16 +23,18 @@ type firebase struct {
 	NotificationClickedTargetURL string `json:"notificationClickedTargetUrl"`
 }
 
-type mongo struct {
-	URL      string `json:"url"`
+type mySQL struct {
+	Host     string `json:"host"`
+	Port     string `json:"port"`
 	User     string `json:"user"`
 	Password string `json:"password"`
+	Database string `json:"database"`
 }
 
 type Config struct {
 	App      app      `json:"app"`
 	Firebase firebase `json:"firebase"`
-	Mongo    mongo    `json:"mongo"`
+	MySQL    mySQL    `json:"mysql"`
 }
 
 func Init(confFilePath string) (*Config, error) {
