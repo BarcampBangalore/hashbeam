@@ -23,6 +23,14 @@ type firebase struct {
 	NotificationClickedTargetURL string `json:"notificationClickedTargetUrl"`
 }
 
+type twitter struct {
+	ConsumerKey       string `json:"consumerKey"`
+	ConsumerSecret    string `json:"consumerSecret"`
+	AccessToken       string `json:"accessToken"`
+	AccessTokenSecret string `json:"accessTokenSecret"`
+	TextToTrack       string `json:"textToTrack"`
+}
+
 type mySQL struct {
 	Host     string `json:"host"`
 	Port     string `json:"port"`
@@ -34,6 +42,7 @@ type mySQL struct {
 type Config struct {
 	App      app      `json:"app"`
 	Firebase firebase `json:"firebase"`
+	Twitter  twitter  `json:"twitter"`
 	MySQL    mySQL    `json:"mysql"`
 }
 

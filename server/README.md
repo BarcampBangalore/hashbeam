@@ -4,7 +4,7 @@
 {
   "app": {
     "port": "3000",
-    "jwtSecret": "bigmansathyabhat",
+    "jwtSecret": "supersecretstring",
     "admins": [
       { "username": "admin1", "password": "password1" },
       { "username": "admin2", "password": "password2" }
@@ -14,8 +14,14 @@
     "host": "127.0.0.1",
     "port": "3306",
     "user": "root",
-    "password": "pass",
+    "password": "password",
     "database": "bcb"
+  },
+  "twitter": {
+    "consumerKey": "",
+    "consumerSecret": "",
+    "accessToken": "",
+    "accessTokenSecret": ""
   },
   "firebase": {
     "topicName": "sometopicname",
