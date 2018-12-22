@@ -1,20 +1,14 @@
 package main
 
 import (
-	"github.com/rs/cors"
+	"github.com/gorilla/handlers"
 	"log"
 	"net/http"
+	"os"
 	"server/api"
 	"server/conf"
 	"server/db"
 )
-
-func logRequestsMiddleware(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s %s\n", r.RemoteAddr, r.Method, r.URL)
-		handler.ServeHTTP(w, r)
-	})
-}
 
 func main() {
 	config, err := conf.Init("./config.json")
@@ -39,6 +33,19 @@ func main() {
 
 	a := api.NewAPI(dbCtx, *config)
 
-	httpHandler := cors.Default().Handler(logRequestsMiddleware(a.Router))
-	log.Fatal(http.ListenAndServe(":8080", httpHandler))
+	httpHandler := applyMiddleware(
+		a.Router,
+		func(h http.Handler) http.Handler { return handlers.LoggingHandler(os.Stdout, h) },
+		handlers.CORS(handlers.AllowedOrigins([]string{"*"})),
+	)
+
+	log.Printf("Starting server on port " + config.App.Port)
+	log.Fatal(http.ListenAndServe(":" + config.App.Port, httpHandler))
+}
+
+func applyMiddleware(h http.Handler, middleware ...func(h http.Handler) http.Handler) http.Handler {
+	for _, mw := range middleware {
+		h = mw(h)
+	}
+	return h
 }

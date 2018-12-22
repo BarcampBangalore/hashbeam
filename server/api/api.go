@@ -31,7 +31,7 @@ func NewAPI(database *db.DatabaseContext, config conf.Config) *API {
 	})
 
 	api.ws.HandleDisconnect(func(*melody.Session) {
-		log.Printf("ws client disconnected -- current number of connections: %d\n", api.ws.Len()-1)
+		log.Printf("ws client disconnected -- current number of connections: %d\n", api.ws.Len())
 	})
 
 	api.Router.PanicHandler = api.panicHandler
