@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"log"
@@ -56,10 +57,37 @@ func (a *API) createAnnouncement() httprouter.Handle {
 			return
 		}
 
-		w.WriteHeader(http.StatusCreated)
-		err = json.NewEncoder(w).Encode(savedAnnouncement)
+		b := &bytes.Buffer{}
+		err = json.NewEncoder(b).Encode(savedAnnouncement)
 		if err != nil {
 			log.Printf("HTTP handler saveAnnouncement marshaling response to JSON failed: %v", err)
+			http.Error(w, "server error", http.StatusInternalServerError)
+			return
+		}
+
+		resp := b.Bytes()
+
+		w.WriteHeader(http.StatusCreated)
+		_, err = w.Write(resp)
+		if err != nil {
+			log.Printf("HTTP handler saveAnnouncement writing created announcement bytes buffer to http.ResponseWriter failed: %v", err)
+			http.Error(w, "server error", http.StatusInternalServerError)
+			return
+		}
+
+		err = a.ws.Broadcast(resp)
+		if err != nil {
+			log.Printf("HTTP handler saveAnnouncement broadcasting created announcement bytes buffer to all WS clients failed: %v", err)
+			return
+		}
+	}
+}
+
+func (a *API) subscribeToAnnouncements() httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		err := a.ws.HandleRequest(w, r)
+		if err != nil {
+			log.Printf("HTTP handler subscribeToAnnouncements upgrading connection to ws failed: %v", err)
 			http.Error(w, "server error", http.StatusInternalServerError)
 			return
 		}

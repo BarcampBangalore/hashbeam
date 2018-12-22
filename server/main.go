@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"server/api"
@@ -37,5 +38,7 @@ func main() {
 	}
 
 	a := api.NewAPI(dbCtx, *config)
-	log.Fatal(http.ListenAndServe(":8080", logRequestsMiddleware(a.Router)))
+
+	httpHandler := cors.Default().Handler(logRequestsMiddleware(a.Router))
+	log.Fatal(http.ListenAndServe(":8080", httpHandler))
 }
