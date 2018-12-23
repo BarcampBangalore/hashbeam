@@ -10,35 +10,40 @@ import (
 )
 
 type API struct {
-	database *db.DatabaseContext
+	database *db.DBContext
 	config   conf.Config
 	ws       *melody.Melody
-	Router   *httprouter.Router
+	router   *httprouter.Router
 }
 
-func NewAPI(database *db.DatabaseContext, config conf.Config) *API {
+func (a *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	a.router.ServeHTTP(w, r)
+}
+
+func NewAPI(database *db.DBContext, config conf.Config) *API {
 	router := httprouter.New()
 	ws := melody.New()
 
-	api := &API{database, config, ws, router}
+	router.PanicHandler = panicHandler
 
-	api.Router.GET("/announcements", api.getAnnouncements())
-	api.Router.POST("/announcements", api.createAnnouncement())
-	api.Router.GET("/ws/announcements", api.subscribeToAnnouncements())
-
-	api.ws.HandleConnect(func(*melody.Session) {
+	ws.HandleConnect(func(*melody.Session) {
 		log.Printf("ws client connected -- current number of connections: %d\n", api.ws.Len()+1)
 	})
 
-	api.ws.HandleDisconnect(func(*melody.Session) {
+	ws.HandleDisconnect(func(*melody.Session) {
 		log.Printf("ws client disconnected -- current number of connections: %d\n", api.ws.Len())
 	})
 
-	api.Router.PanicHandler = api.panicHandler
+	api := &API{database, config, ws, router}
+
+	api.router.GET("/announcements", api.getAnnouncements())
+	api.router.POST("/announcements", api.createAnnouncement())
+	api.router.GET("/ws/announcements", api.subscribeToAnnouncements())
+
 	return api
 }
 
-func (a *API) panicHandler(w http.ResponseWriter, r *http.Request, err interface{}) {
+func panicHandler(w http.ResponseWriter, r *http.Request, err interface{}) {
 	log.Printf("Panic recovered: %s -- %v\n", r.URL.Path, err)
 	http.Error(w, "server error", http.StatusInternalServerError)
 }

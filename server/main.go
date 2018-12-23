@@ -11,30 +11,26 @@ import (
 )
 
 func main() {
-	config, err := conf.Init("./config.json")
+	config, err := conf.NewConfig("./config.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	connString := config.MySQL.User + ":" + config.MySQL.Password + "@(" +
-		config.MySQL.Host + ":" + config.MySQL.Port + ")/" +
-		config.MySQL.Database + "?parseTime=true"
-
-	dbCtx, err := db.Init(connString)
+	dbContext, err := db.NewDBContext(config.MySQL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer dbCtx.DB.Close()
+	defer dbContext.Close()
 
-	err = dbCtx.SetupTables()
+	err = dbContext.SetupTables()
 	if err != nil {
 		log.Fatalf("couldn't ensure database schema (create table if not exists failed): %v", err)
 	}
 
-	a := api.NewAPI(dbCtx, *config)
+	app := api.NewAPI(dbContext, *config)
 
 	httpHandler := applyMiddleware(
-		a.Router,
+		app,
 		func(h http.Handler) http.Handler { return handlers.LoggingHandler(os.Stdout, h) },
 		handlers.CORS(handlers.AllowedOrigins([]string{"*"})),
 	)

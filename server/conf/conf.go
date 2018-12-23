@@ -6,24 +6,24 @@ import (
 	"io/ioutil"
 )
 
-type admin struct {
+type Admin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-type app struct {
+type App struct {
 	Port      string  `json:"port"`
 	JWTSecret string  `json:"jwtSecret"`
-	Admins    []admin `json:"admins"`
+	Admins    []Admin `json:"admins"`
 }
 
-type firebase struct {
+type Firebase struct {
 	TopicName                    string `json:"topicName"`
 	NotificationIconURL          string `json:"notificationIconUrl"`
 	NotificationClickedTargetURL string `json:"notificationClickedTargetUrl"`
 }
 
-type twitter struct {
+type Twitter struct {
 	ConsumerKey       string `json:"consumerKey"`
 	ConsumerSecret    string `json:"consumerSecret"`
 	AccessToken       string `json:"accessToken"`
@@ -31,7 +31,7 @@ type twitter struct {
 	TextToTrack       string `json:"textToTrack"`
 }
 
-type mySQL struct {
+type MySQL struct {
 	Host     string `json:"host"`
 	Port     string `json:"port"`
 	User     string `json:"user"`
@@ -40,13 +40,13 @@ type mySQL struct {
 }
 
 type Config struct {
-	App      app      `json:"app"`
-	Firebase firebase `json:"firebase"`
-	Twitter  twitter  `json:"twitter"`
-	MySQL    mySQL    `json:"mysql"`
+	App      App      `json:"App"`
+	Firebase Firebase `json:"Firebase"`
+	Twitter  Twitter  `json:"Twitter"`
+	MySQL    MySQL    `json:"mysql"`
 }
 
-func Init(confFilePath string) (*Config, error) {
+func NewConfig(confFilePath string) (*Config, error) {
 	buf, err := ioutil.ReadFile(confFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("reading configuration file failed: %v", err)
