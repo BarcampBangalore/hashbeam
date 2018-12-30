@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"server/conf"
 	"server/db"
+	"server/twitter"
 )
 
 type API struct {
@@ -14,13 +15,14 @@ type API struct {
 	config   conf.Config
 	ws       *melody.Melody
 	router   *httprouter.Router
+	twit     *twitter.TwitterContext
 }
 
 func (a *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.router.ServeHTTP(w, r)
 }
 
-func NewAPI(database *db.DBContext, config conf.Config) *API {
+func NewAPI(database *db.DBContext, twit *twitter.TwitterContext, config conf.Config) *API {
 	router := httprouter.New()
 	ws := melody.New()
 
@@ -34,11 +36,12 @@ func NewAPI(database *db.DBContext, config conf.Config) *API {
 		log.Printf("ws client disconnected -- current number of connections: %d\n", ws.Len())
 	})
 
-	api := &API{database, config, ws, router}
+	api := &API{database, config, ws, router, twit}
 
 	api.router.GET("/announcements", api.getAnnouncements())
 	api.router.POST("/announcements", api.createAnnouncement())
 	api.router.GET("/ws/announcements", api.subscribeToAnnouncements())
+	api.router.GET("/tweets", api.getTweets())
 
 	return api
 }

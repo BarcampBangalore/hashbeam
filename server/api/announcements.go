@@ -15,7 +15,7 @@ func (a *API) getAnnouncements() httprouter.Handle {
 		var results []models.Announcement
 		var err error
 
-		if ps.ByName("all") == "1" {
+		if r.URL.Query().Get("all") == "1" {
 			results, err = a.database.GetAnnouncements()
 		} else {
 			results, err = a.database.GetAnnouncementsByDate(time.Now())

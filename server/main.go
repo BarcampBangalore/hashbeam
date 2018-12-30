@@ -33,7 +33,7 @@ func main() {
 		log.Fatalf("couldn't create twitter context: %v", err)
 	}
 
-	app := api.NewAPI(dbContext, *config)
+	app := api.NewAPI(dbContext, twitterContext, *config)
 
 	httpHandler := applyMiddleware(
 		app,
@@ -48,7 +48,7 @@ func main() {
 	}
 
 	log.Printf("Starting server on port " + config.App.Port)
-	log.Fatal(http.ListenAndServe(":" + config.App.Port, httpHandler))
+	log.Fatal(http.ListenAndServe(":"+config.App.Port, httpHandler))
 }
 
 func applyMiddleware(h http.Handler, middleware ...func(h http.Handler) http.Handler) http.Handler {

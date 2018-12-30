@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS `tweets`
 (
-  `tweet_id`        varchar(45) NOT NULL,
-  `datetime`        datetime    NOT NULL,
-  `json_body`       json        NOT NULL,
-  `author_id`       varchar(45) NOT NULL,
-  `review_required` tinyint(1)  NOT NULL,
+  `tweet_id`            varchar(45) NOT NULL,
+  `datetime`            datetime    NOT NULL,
+  `original_tweet_json` json        NOT NULL,
+  `author_id`           varchar(45) NOT NULL,
+  `review_required`     boolean     NOT NULL,
   PRIMARY KEY (`tweet_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

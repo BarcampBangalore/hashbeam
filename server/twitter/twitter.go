@@ -14,11 +14,11 @@ import (
 )
 
 type TwitterContext struct {
-	database      *db.DBContext
-	config        conf.Twitter
-	twitterClient *twit.Client
+	database            *db.DBContext
+	config              conf.Twitter
+	twitterClient       *twit.Client
 	allowedUserIDsMutex sync.RWMutex
-	allowedUserIDs map[string]bool
+	allowedUserIDs      map[string]bool
 }
 
 func NewTwitterContext(database *db.DBContext, config conf.Twitter) (*TwitterContext, error) {
@@ -75,11 +75,11 @@ func (ctx *TwitterContext) onTweet(t *twit.Tweet) {
 	time, _ := t.CreatedAtTime()
 
 	err = ctx.database.SaveTweet(models.Tweet{
-		TweetID:        t.IDStr,
-		AuthorID:       t.User.IDStr,
-		Time:           time,
-		JSONBody:       jsonBody.Bytes(),
-		ReviewRequired: reviewRequired,
+		TweetID:           t.IDStr,
+		AuthorID:          t.User.IDStr,
+		Time:              time,
+		OriginalTweetJSON: jsonBody.String(),
+		ReviewRequired:    reviewRequired,
 	})
 
 	if err != nil {

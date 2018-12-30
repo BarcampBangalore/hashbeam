@@ -1,11 +1,13 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Tweet struct {
-	TweetID        string    `db:"tweet_id"`
-	Time           time.Time `db:"datetime"`
-	JSONBody       []byte    `db:"content"`
-	AuthorID       string    `db:"author_id"`
-	ReviewRequired bool      `db:"review_required"`
+	TweetID           string    `db:"tweet_id"`
+	Time              time.Time `db:"datetime"`
+	OriginalTweetJSON string    `db:"original_tweet_json"`
+	AuthorID          string    `db:"author_id"`
+	ReviewRequired    bool      `db:"review_required"`
 }
