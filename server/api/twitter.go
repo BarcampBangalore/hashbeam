@@ -6,7 +6,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
-	"server/models"
 	"time"
 )
 
@@ -20,14 +19,37 @@ type apiResponseTweet struct {
 
 func (a *API) getTweets() httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		var tweets []models.Tweet
-		var err error
-
 		if r.URL.Query().Get("review_required") == "1" {
-			tweets, err = a.database.GetTweetsToReview()
-		} else {
-			tweets, err = a.database.GetTweetsToDisplay()
+			tweet, err := a.database.GetTweetToReview()
+			if err != nil {
+				log.Printf("HTTP handler getTweets failed: %v", err)
+				http.Error(w, "server error", http.StatusInternalServerError)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+
+			var originalTweet twitter.Tweet
+			_ = json.Unmarshal([]byte(tweet.OriginalTweetJSON), &originalTweet)
+
+			apiFormattedTweet := apiResponseTweet{
+				TweetID:        tweet.TweetID,
+				Time:           tweet.Time,
+				OriginalTweet:  originalTweet,
+				AuthorID:       tweet.AuthorID,
+				ReviewRequired: tweet.ReviewRequired,
+			}
+
+			err = json.NewEncoder(w).Encode(apiFormattedTweet)
+			if err != nil {
+				log.Printf("HTTP handler getTweets encoding results to JSON failed: %v", err)
+				http.Error(w, "server error", http.StatusInternalServerError)
+			}
+
+			return
 		}
+
+		tweets, err := a.database.GetTweetsToDisplay()
 
 		if err != nil {
 			log.Printf("HTTP handler getTweets failed: %v", err)
