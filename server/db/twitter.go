@@ -16,6 +16,17 @@ func (ctx *DBContext) GetWhitelistTwitterIDs() ([]string, error) {
 	return result, nil
 }
 
+func (ctx *DBContext) GetMutedTwitterIDs() ([]string, error) {
+	result := make([]string, 0)
+
+	err := ctx.db.Select(&result, "SELECT `twitter_user_id` FROM `muted_tweeters`")
+	if err != nil {
+		return nil, fmt.Errorf("db GetMutedTwitterIDs failed; %v", err)
+	}
+
+	return result, nil
+}
+
 func (ctx *DBContext) GetTweetToReview() (*models.Tweet, error) {
 	var tweet models.Tweet
 

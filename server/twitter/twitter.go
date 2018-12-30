@@ -19,6 +19,8 @@ type TwitterContext struct {
 	twitterClient       *twit.Client
 	allowedUserIDsMutex sync.RWMutex
 	allowedUserIDs      map[string]bool
+	mutedUserIDsMutex   sync.RWMutex
+	mutedUserIDs        map[string]bool
 }
 
 func NewTwitterContext(database *db.DBContext, config conf.Twitter) (*TwitterContext, error) {
@@ -27,15 +29,19 @@ func NewTwitterContext(database *db.DBContext, config conf.Twitter) (*TwitterCon
 	twitterClient := twit.NewClient(oauthConfig.Client(oauth1.NoContext, token))
 
 	twitterContext := &TwitterContext{
-		database:       database,
-		config:         config,
-		twitterClient:  twitterClient,
-		allowedUserIDs: make(map[string]bool),
+		database:      database,
+		config:        config,
+		twitterClient: twitterClient,
 	}
 
 	err := twitterContext.updatedAllowedUserIDs()
 	if err != nil {
 		return nil, fmt.Errorf("twitter NewTwitterContext initial fetch of allowed user IDs failed: %v", err)
+	}
+
+	err = twitterContext.updateMutedUserIDs()
+	if err != nil {
+		return nil, fmt.Errorf("twitter NewTwitterContext initial fetch of muted user IDs failed: %v", err)
 	}
 
 	return twitterContext, nil
@@ -58,6 +64,23 @@ func (ctx *TwitterContext) updatedAllowedUserIDs() error {
 	return nil
 }
 
+func (ctx *TwitterContext) updateMutedUserIDs() error {
+	mutedUserIDsSlice, err := ctx.database.GetMutedTwitterIDs()
+	if err != nil {
+		return fmt.Errorf("twitter updateMuserUserIDs getting muted user IDs from database failed: %v", err)
+	}
+
+	mutedUserIDsMap := make(map[string]bool)
+	for _, userID := range mutedUserIDsSlice {
+		mutedUserIDsMap[userID] = true
+	}
+
+	ctx.mutedUserIDsMutex.Lock()
+	ctx.mutedUserIDs = mutedUserIDsMap
+	ctx.mutedUserIDsMutex.Unlock()
+	return nil
+}
+
 func (ctx *TwitterContext) onTweet(t *twit.Tweet) {
 	jsonBody := &bytes.Buffer{}
 	err := json.NewEncoder(jsonBody).Encode(t)
@@ -65,12 +88,22 @@ func (ctx *TwitterContext) onTweet(t *twit.Tweet) {
 		log.Printf("twitter onTweet encoding tweet body to JSON failed: %v", err)
 	}
 
-	reviewRequired := true
+	ctx.mutedUserIDsMutex.RLock()
+	_, userIsMuted := ctx.mutedUserIDs[t.User.IDStr]
+	ctx.mutedUserIDsMutex.RUnlock()
+
+	if userIsMuted {
+		return
+	}
+
 	ctx.allowedUserIDsMutex.RLock()
-	if _, exists := ctx.allowedUserIDs[t.User.IDStr]; exists {
+	_, userIsWhitelisted := ctx.allowedUserIDs[t.User.IDStr]
+	ctx.allowedUserIDsMutex.RUnlock()
+
+	reviewRequired := true
+	if userIsWhitelisted {
 		reviewRequired = false
 	}
-	ctx.allowedUserIDsMutex.RUnlock()
 
 	time, _ := t.CreatedAtTime()
 

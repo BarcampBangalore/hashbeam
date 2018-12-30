@@ -24,3 +24,10 @@ CREATE TABLE IF NOT EXISTS `whitelisted_tweeters`
   PRIMARY KEY (`twitter_user_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `muted_tweeters`
+(
+  `twitter_user_id` varchar(45) NOT NULL,
+  PRIMARY KEY (`twitter_user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
