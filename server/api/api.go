@@ -27,11 +27,11 @@ func NewAPI(database *db.DBContext, config conf.Config) *API {
 	router.PanicHandler = panicHandler
 
 	ws.HandleConnect(func(*melody.Session) {
-		log.Printf("ws client connected -- current number of connections: %d\n", api.ws.Len()+1)
+		log.Printf("ws client connected -- current number of connections: %d\n", ws.Len()+1)
 	})
 
 	ws.HandleDisconnect(func(*melody.Session) {
-		log.Printf("ws client disconnected -- current number of connections: %d\n", api.ws.Len())
+		log.Printf("ws client disconnected -- current number of connections: %d\n", ws.Len())
 	})
 
 	api := &API{database, config, ws, router}

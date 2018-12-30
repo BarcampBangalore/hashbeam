@@ -5,7 +5,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"io/ioutil"
+	"log"
 	"server/conf"
+	"strings"
 )
 
 type DBContext struct {
@@ -32,14 +34,21 @@ func (ctx *DBContext) SetupTables() error {
 	}
 
 	sqlString := string(sqlFile)
-	_, err = ctx.db.Exec(sqlString)
-	if err != nil {
-		return fmt.Errorf("failed to execute table setup SQL: %v", err)
+	sqlStatements := strings.Split(sqlString, ";\n")
+
+	for _, statement := range sqlStatements {
+		_, err = ctx.db.Exec(statement)
+		if err != nil {
+			return fmt.Errorf("failed to execute table setup SQL: %v", err)
+		}
 	}
 
 	return nil
 }
 
-func (ctx *DBContext) Close() error {
-	return ctx.db.Close()
+func (ctx *DBContext) Close() {
+	err := ctx.db.Close()
+	if err != nil {
+		log.Printf("db Close() returned an error: %v", err)
+	}
 }

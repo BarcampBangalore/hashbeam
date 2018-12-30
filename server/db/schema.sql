@@ -1,27 +1,26 @@
-CREATE TABLE IF NOT EXISTS `announcements`
+CREATE TABLE IF NOT EXISTS `tweets`
 (
-  `id`       int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `datetime` DATETIME         NOT NULL,
-  `message`  TEXT             NOT NULL,
-  PRIMARY KEY (`id`)
+  `tweet_id`        varchar(45) NOT NULL,
+  `datetime`        datetime    NOT NULL,
+  `json_body`       json        NOT NULL,
+  `author_id`       varchar(45) NOT NULL,
+  `review_required` tinyint(1)  NOT NULL,
+  PRIMARY KEY (`tweet_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `tweets`
+CREATE TABLE IF NOT EXISTS `announcements`
 (
-  `tweet_id`        VARCHAR(45) NOT NULL,
-  `datetime`        DATETIME    NOT NULL,
-  `content`         JSON        NOT NULL,
-  `author_id`       VARCHAR(45) NOT NULL,
-  `review_required` BOOLEAN     NOT NULL,
-  PRIMARY KEY (`tweet_id`)
+  `id`       int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `datetime` datetime         NOT NULL,
+  `message`  text             NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `whitelisted_tweeters`
 (
-  `twitter_user_id` VARCHAR(45) NOT NULL,
-  `display_name`    VARCHAR(45) NOT NULL,
+  `twitter_user_id` varchar(45) NOT NULL,
   PRIMARY KEY (`twitter_user_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
