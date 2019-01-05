@@ -10,6 +10,7 @@ require (
 	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/jmoiron/sqlx v1.2.0
+	github.com/juju/errors v0.0.0-20181118221551-089d3ea4e4d5 // indirect
 	github.com/julienschmidt/httprouter v1.2.0
 	google.golang.org/appengine v1.3.0 // indirect
 	gopkg.in/olahol/melody.v1 v1.0.0-20170518105555-d52139073376

@@ -22,7 +22,7 @@ func (a *API) getAnnouncements() httprouter.Handle {
 		}
 
 		if err != nil {
-			log.Printf("HTTP handler getAnnouncements failed: %v", err)
+			log.Printf("HTTP handler getAnnouncements failed: %+v", err)
 			http.Error(w, "server error", http.StatusInternalServerError)
 			return
 		}
@@ -30,7 +30,7 @@ func (a *API) getAnnouncements() httprouter.Handle {
 		w.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(w).Encode(results)
 		if err != nil {
-			log.Printf("HTTP handler getAnnouncements encoding results to JSON failed: %v", err)
+			log.Printf("HTTP handler getAnnouncements encoding results to JSON failed: %+v", err)
 			http.Error(w, "server error", http.StatusInternalServerError)
 		}
 	}
@@ -52,7 +52,7 @@ func (a *API) createAnnouncement() httprouter.Handle {
 		announcement := models.Announcement{ID: 0, Time: time.Now(), Message: requestBody.Message}
 		savedAnnouncement, err := a.database.SaveAnnouncement(announcement)
 		if err != nil {
-			log.Printf("HTTP handler createAnnouncement saving announcement to db failed: %v", err)
+			log.Printf("HTTP handler createAnnouncement saving announcement to db failed: %+v", err)
 			http.Error(w, "server error", http.StatusInternalServerError)
 			return
 		}
@@ -60,7 +60,7 @@ func (a *API) createAnnouncement() httprouter.Handle {
 		b := &bytes.Buffer{}
 		err = json.NewEncoder(b).Encode(savedAnnouncement)
 		if err != nil {
-			log.Printf("HTTP handler saveAnnouncement marshaling response to JSON failed: %v", err)
+			log.Printf("HTTP handler saveAnnouncement marshaling response to JSON failed: %+v", err)
 			http.Error(w, "server error", http.StatusInternalServerError)
 			return
 		}

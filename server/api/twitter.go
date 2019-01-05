@@ -80,3 +80,5 @@ func (a *API) getTweets() httprouter.Handle {
 		}
 	}
 }
+
+func (a *API)
