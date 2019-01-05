@@ -3,18 +3,31 @@ type AuthResponse {
 }
 
 type Announcement {
+  id: ID!
   timestampISO8601: String!
   message: String!
 }
 
+type Tweet {
+  tweetId: ID!
+  authorId: String!
+  timestampISO8601: String!
+  reviewRequired: Boolean!
+  originalTweetJson: String!
+}
+
 type Query {
   announcements: [Announcement!]!
+  tweetsToDisplay: [Tweet!]!
+  tweetToReview: Tweet!
 }
 
 type Mutation {
   authenticate(username: String!, password: String!): AuthResponse!
   subscribeToNotifications(fcmToken: String!): Boolean!
   makeAnnouncement(message: String!): Announcement!
+  whitelistTweeter(twitterAuthorID: String!): Boolean!
+  muteTweeter(twitterAuthorID: String!): Boolean!
 }
 
 type Subscription {

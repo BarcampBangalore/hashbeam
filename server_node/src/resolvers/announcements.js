@@ -26,9 +26,13 @@ const resolvers = {
       const timestamp = new Date();
       const { message } = args;
 
-      await context.db('announcements').insert({ timestamp, message });
+      const id = await context
+        .db('announcements')
+        .insert({ timestamp, message })
+        .returning('id');
 
       const announcement = {
+        id,
         timestampISO8601: timestamp.toISOString(),
         message
       };
