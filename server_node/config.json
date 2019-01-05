@@ -15,11 +15,11 @@
     "database": "bcb"
   },
   "twitter": {
-    "consumerKey": "IO4oNXyBNHBNp3RBNo7grR64c",
-    "consumerSecret": "s1YeXS0WweTosDVY1EkxE8vnSjl1QmQZoI0RelUyhwl1SJNDoD",
-    "accessToken": "782415277388664832-SATTfUuYf1vGgfreuHVPZf81jVx4xjm",
-    "accessTokenSecret": "gc1RCqrRqG6mfAGOWtZq41f5iOPbsCsnAZWrTDHck5DPU",
-    "textToTrack": "#SundayMorning"
+    "consumer_key": "IO4oNXyBNHBNp3RBNo7grR64c",
+    "consumer_secret": "s1YeXS0WweTosDVY1EkxE8vnSjl1QmQZoI0RelUyhwl1SJNDoD",
+    "access_token": "782415277388664832-SATTfUuYf1vGgfreuHVPZf81jVx4xjm",
+    "access_token_secret": "gc1RCqrRqG6mfAGOWtZq41f5iOPbsCsnAZWrTDHck5DPU",
+    "textToTrack": "#SaturdayMorning"
   },
   "fcm": {
     "topicName": "sometopicname",

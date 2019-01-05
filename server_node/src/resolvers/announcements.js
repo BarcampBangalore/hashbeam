@@ -48,7 +48,7 @@ const resolvers = {
       return announcement;
     },
 
-    subscribeToNofications: async (root, args, context, info) => {
+    subscribeToNotifications: async (root, args, context, info) => {
       const { fcmToken } = args;
 
       await context.firebase

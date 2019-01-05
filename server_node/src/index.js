@@ -6,6 +6,7 @@ const Firebase = require('firebase-admin');
 const { authMiddleware } = require('./lib/auth-middleware');
 const { resolvers } = require('./resolvers');
 const config = require('../config.json');
+const { Twitter } = require('./lib/twitter');
 const firebaseServiceKeyJson = require('../firebase-service-key.json');
 const knex = require('knex');
 
@@ -24,10 +25,13 @@ const main = async () => {
     credential: Firebase.credential.cert(firebaseServiceKeyJson)
   });
 
+  const twitter = new Twitter(config.twitter, db);
+  twitter.startStream();
+
   const server = new GraphQLServer({
     typeDefs: 'src/schema.graphql',
     resolvers,
-    context: params => ({ ...params, config, db, pubsub, firebase }),
+    context: params => ({ ...params, config, db, pubsub, firebase, twitter }),
     middlewares: [authMiddleware]
   });
 
