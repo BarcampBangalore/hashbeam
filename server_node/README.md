@@ -5,18 +5,12 @@
   "app": {
     "port": "3000",
     "jwtSecret": "bigmansathyabhat",
-    "admins": [
-      {
-        "username": "admin1",
-        "password": "password1"
-      },
-      {
-        "username": "admin2",
-        "password": "password2"
-      }
-    ]
+    "admins": {
+      "admin1": "password1",
+      "admin2": "password2"
+    }
   },
-  "mysql": {
+  "mySql": {
     "host": "127.0.0.1",
     "port": "3306",
     "user": "root",
@@ -24,11 +18,11 @@
     "database": "bcb"
   },
   "twitter": {
-    "consumerKey": "",
-    "consumerSecret": "",
-    "accessToken": "",
-    "accessTokenSecret": "",
-    "textToTrack": "#SundayMorning"
+    "consumer_key": "",
+    "consumer_secret": "",
+    "access_token": "",
+    "access_token_secret": "",
+    "textToTrack": "#bcb19"
   },
   "fcm": {
     "topicName": "sometopicname",
