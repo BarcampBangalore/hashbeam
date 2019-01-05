@@ -39,13 +39,16 @@ const resolvers = {
 
       context.pubsub.publish('announcement', { newAnnouncement: announcement });
 
-      context.firebase.messaging().sendToTopic(context.config.fcm.topicName, {
-        notification: {
-          body: message,
-          icon: context.config.fcm.notificationIconUrl,
-          clickAction: context.config.fcm.notificationClickedTargetUrl
-        }
-      });
+      context.firebase
+        .messaging()
+        .sendToTopic(context.config.fcm.topicName, {
+          notification: {
+            body: message,
+            icon: context.config.fcm.notificationIconUrl,
+            clickAction: context.config.fcm.notificationClickedTargetUrl
+          }
+        })
+        .catch(err => console.error('Firebase notification failed', err));
 
       return announcement;
     },
