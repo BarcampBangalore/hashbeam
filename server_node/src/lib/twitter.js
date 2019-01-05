@@ -1,11 +1,6 @@
-const knex = require('knex');
 const twit = require('twit');
 
 class Twitter {
-  /**
-   * @param {*} config
-   * @param {knex} db
-   */
   constructor(config, db) {
     this.client = new twit(config);
     this.config = config;

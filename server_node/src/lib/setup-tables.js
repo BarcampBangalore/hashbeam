@@ -1,10 +1,6 @@
-const knex = require('knex');
 const fs = require('fs').promises;
 const path = require('path');
 
-/**
- * @param {knex} db
- */
 const setupTables = async db => {
   const schemaFile = await fs.readFile(path.join(__dirname, 'schema.sql'));
   const sqlString = schemaFile.toString();
