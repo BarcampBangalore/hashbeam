@@ -2,10 +2,20 @@ type AuthResponse {
   token: String!
 }
 
+type Announcement {
+  timestampISO8601: String!
+  message: String!
+}
+
 type Query {
-  dummy: String
+  announcements: [Announcement!]!
 }
 
 type Mutation {
   authenticate(username: String!, password: String!): AuthResponse
+  makeAnnouncement(message: String!): Announcement!
+}
+
+type Subscription {
+  newAnnouncement: Announcement!
 }
