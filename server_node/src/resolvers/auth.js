@@ -15,7 +15,7 @@ const resolvers = {
         !config.app.admins[username] ||
         config.app.admins[username] !== password
       ) {
-        return new InvalidCredentialsError();
+        throw new InvalidCredentialsError();
       }
 
       const token = jwt.sign({ username }, config.app.jwtSecret, {

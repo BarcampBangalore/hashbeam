@@ -25,7 +25,7 @@ const authMiddleware = (resolve, parent, args, context, info) => {
     context = { ...context, user };
     return resolve(parent, args, context, info);
   } catch (err) {
-    return new InvalidTokenError();
+    throw new InvalidTokenError();
   }
 };
 

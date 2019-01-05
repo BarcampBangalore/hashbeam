@@ -19,7 +19,7 @@ type Tweet {
 type Query {
   announcements: [Announcement!]!
   tweetsToDisplay: [Tweet!]!
-  tweetToReview: Tweet!
+  tweetToReview: Tweet
 }
 
 type Mutation {

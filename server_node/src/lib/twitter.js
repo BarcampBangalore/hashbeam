@@ -10,18 +10,17 @@ class Twitter {
   }
 
   async updateMutedUserIds() {
-    const mutedUserIds = await this.db
-      .select('twitter_user_id')
-      .from('muted_tweeters');
-
+    const rows = await this.db.select('twitter_user_id').from('muted_tweeters');
+    const mutedUserIds = rows.map(row => row.twitter_user_id);
     this.mutedUserIds = new Set(mutedUserIds);
   }
 
   async updateWhitelistedUserIds() {
-    const whitelistedUserIds = await this.db
+    const rows = await this.db
       .select('twitter_user_id')
       .from('whitelisted_tweeters');
 
+    const whitelistedUserIds = rows.map(row => row.twitter_user_id);
     this.whitelistedUserIds = new Set(whitelistedUserIds);
   }
 
