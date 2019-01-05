@@ -26,10 +26,10 @@ const resolvers = {
       const timestamp = new Date();
       const { message } = args;
 
-      const id = await context
+      const [id] = await context
         .db('announcements')
         .insert({ timestamp, message })
-        .returning('id');
+        .returning(['id']);
 
       const announcement = {
         id,
@@ -39,15 +39,13 @@ const resolvers = {
 
       context.pubsub.publish('announcement', { newAnnouncement: announcement });
 
-      await context.firebase
-        .messaging()
-        .sendToTopic(context.config.fcm.topicName, {
-          notification: {
-            body: message,
-            icon: context.config.fcm.notificationIconUrl,
-            clickAction: context.config.fcm.notificationClickedTargetUrl
-          }
-        });
+      context.firebase.messaging().sendToTopic(context.config.fcm.topicName, {
+        notification: {
+          body: message,
+          icon: context.config.fcm.notificationIconUrl,
+          clickAction: context.config.fcm.notificationClickedTargetUrl
+        }
+      });
 
       return announcement;
     },
