@@ -12,7 +12,8 @@ type Query {
 }
 
 type Mutation {
-  authenticate(username: String!, password: String!): AuthResponse
+  authenticate(username: String!, password: String!): AuthResponse!
+  subscribeToNotifications(fcmToken: String!): Boolean!
   makeAnnouncement(message: String!): Announcement!
 }
 

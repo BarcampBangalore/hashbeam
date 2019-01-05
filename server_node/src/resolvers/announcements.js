@@ -34,7 +34,28 @@ const resolvers = {
       };
 
       context.pubsub.publish('announcement', { newAnnouncement: announcement });
+
+      await context.firebase
+        .messaging()
+        .sendToTopic(context.config.fcm.topicName, {
+          notification: {
+            body: message,
+            icon: context.config.fcm.notificationIconUrl,
+            clickAction: context.config.fcm.notificationClickedTargetUrl
+          }
+        });
+
       return announcement;
+    },
+
+    subscribeToNofications: async (root, args, context, info) => {
+      const { fcmToken } = args;
+
+      await context.firebase
+        .messaging()
+        .subscribeToTopic([fcmToken], context.config.fcm.topicName);
+
+      return true;
     }
   },
   Subscription: {

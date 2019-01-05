@@ -21,7 +21,7 @@
     "accessTokenSecret": "gc1RCqrRqG6mfAGOWtZq41f5iOPbsCsnAZWrTDHck5DPU",
     "textToTrack": "#SundayMorning"
   },
-  "firebase": {
+  "fcm": {
     "topicName": "sometopicname",
     "notificationIconUrl": "https://barcampbangalore.com/bcb/apple-touch-icon.png?v=PY4NNGXQPr",
     "notificationClickedTargetUrl": "https://barcampbangalore.com/bcb/"
