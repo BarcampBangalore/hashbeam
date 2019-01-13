@@ -3,7 +3,7 @@ import React from 'react';
 import { Mutation } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import { Button, Card, Form, Header, Message } from 'semantic-ui-react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 const HorizontalCentered = styled.div`
   display: flex;

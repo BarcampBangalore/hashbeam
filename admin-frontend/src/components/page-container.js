@@ -1,7 +1,5 @@
-import React from 'react';
+import styled from 'styled-components/macro';
 
-const PageContainer = ({ children }) => (
-  <div style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}>{children}</div>
-);
-
-export default PageContainer;
+export default styled.div`
+  margin: 8px 8px 0 8px;
+`;
