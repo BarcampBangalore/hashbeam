@@ -13,7 +13,7 @@ const UnauthorizedError = createError('BCB/UnauthorizedError', {
 
 const formatError = (...args) => {
   const [error] = args;
-  if (error.originalError.name.startsWith('BCB/')) {
+  if (error.originalError && error.originalError.name.startsWith('BCB/')) {
     return apolloFormatError(...args);
   }
 
