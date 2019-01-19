@@ -1,4 +1,5 @@
 const twit = require('twit');
+const { hasVideo } = require('./twitter-utils');
 
 class Twitter {
   constructor(config, db) {
@@ -36,6 +37,10 @@ class Twitter {
 
     stream.on('tweet', async tweet => {
       if (this.mutedUserIds.has(tweet.user.id_str)) {
+        return;
+      }
+
+      if (hasVideo(tweet)) {
         return;
       }
 

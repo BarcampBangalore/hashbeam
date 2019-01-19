@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Tab } from 'semantic-ui-react';
 import styled from 'styled-components/macro';
 import AnnouncementForm from './announcement-form';
+import TweetForm from './tweet-form';
 
 const LogoutButtonContainer = styled.div`
   display: flex;
@@ -20,7 +21,11 @@ const tabPanes = [
   },
   {
     menuItem: 'Tweets',
-    render: () => <Tab.Pane>Tweets</Tab.Pane>
+    render: () => (
+      <Tab.Pane>
+        <TweetForm />
+      </Tab.Pane>
+    )
   }
 ];
 
