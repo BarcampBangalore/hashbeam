@@ -1,13 +1,13 @@
 <template>
   <div :class="$style.grid">
-    <img src="../../assets/logo.svg" :class="$style.logo">
+    <img src="../../assets/logo.png" :class="$style.logo">
     <h1 :class="$style.trackText">{{ trackText }}</h1>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['trackText']
+  props: ["trackText"]
 };
 </script>
 
@@ -15,7 +15,7 @@ export default {
 .grid {
   display: grid;
   grid-template-columns: 1fr 3fr;
-  grid-template-areas: 'logo trackText';
+  grid-template-areas: "logo trackText";
 }
 
 .logo {
@@ -23,7 +23,6 @@ export default {
   justify-self: center;
   align-self: center;
   height: calc((14vh + 14vw) / 2);
-  width: calc((14vh + 14vw) / 2);
 }
 
 .trackText {
