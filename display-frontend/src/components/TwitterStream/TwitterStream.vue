@@ -34,7 +34,7 @@ export default {
   watch: {
     async tweets(tweets) {
       if (tweets.length <= 1) {
-        const response = await this.$apollo.provider.defaultClient.query({
+        const tweetsResponse = await this.$apollo.provider.defaultClient.query({
           query: gql`
             query {
               tweetsToDisplay {
@@ -45,7 +45,7 @@ export default {
           fetchPolicy: "network-only"
         });
 
-        const tweets = response.data.tweetsToDisplay.map(tweet =>
+        const tweets = tweetsResponse.data.tweetsToDisplay.map(tweet =>
           JSON.parse(tweet.originalTweetJson)
         );
         if (tweets.length > 0) {
@@ -66,7 +66,7 @@ export default {
   },
 
   async created() {
-    const response = await this.$apollo.provider.defaultClient.query({
+    const tweetsResponse = await this.$apollo.provider.defaultClient.query({
       query: gql`
         query {
           tweetsToDisplay {
@@ -77,7 +77,7 @@ export default {
       fetchPolicy: "network-only"
     });
 
-    const tweets = response.data.tweetsToDisplay.map(tweet =>
+    const tweets = tweetsResponse.data.tweetsToDisplay.map(tweet =>
       JSON.parse(tweet.originalTweetJson)
     );
     this.tweets = tweets;

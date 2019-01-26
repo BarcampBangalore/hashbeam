@@ -25,26 +25,46 @@ export default {
   },
 
   async created() {
-    const response = await this.$apollo.provider.defaultClient.query({
+    const announcementsResponse = await this.$apollo.provider.defaultClient.query(
+      {
+        query: gql`
+          query {
+            announcements {
+              id
+              timestampISO8601
+              message
+            }
+          }
+        `,
+        fetchPolicy: "network-only"
+      }
+    );
+
+    this.announcements = announcementsResponse.data.announcements;
+  },
+
+  mounted() {
+    const observer = this.$apollo.subscribe({
       query: gql`
-        query {
-          announcements {
+        subscription {
+          newAnnouncement {
             id
             timestampISO8601
             message
           }
         }
-      `,
-      fetchPolicy: "network-only"
+      `
     });
 
-    this.announcements = response.data.announcements;
-  },
+    observer.subscribe({
+      next: payload => {
+        this.announcements.unshift(payload.data.newAnnouncement);
+      },
 
-  sockets: {
-    announcement(announcement) {
-      this.announcements.unshift(announcement);
-    }
+      error() {
+        /* no-op */
+      }
+    });
   }
 };
 </script>
