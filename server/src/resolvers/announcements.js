@@ -12,6 +12,7 @@ const resolvers = {
         .orderBy('timestamp', 'desc');
 
       return announcements.map(announcement => ({
+        id: announcement.id,
         timestampISO8601: announcement.timestamp.toISOString(),
         message: announcement.message
       }));

@@ -10,7 +10,8 @@
 </template>
 
 <script>
-import AnnouncementItem from './AnnouncementItem';
+import AnnouncementItem from "./AnnouncementItem";
+import gql from "graphql-tag";
 
 export default {
   components: {
@@ -23,10 +24,21 @@ export default {
     };
   },
 
-  created() {
-    fetch('/announcements')
-      .then(dataBuffer => dataBuffer.json())
-      .then(announcements => (this.announcements = announcements));
+  async created() {
+    const response = await this.$apollo.provider.defaultClient.query({
+      query: gql`
+        query {
+          announcements {
+            id
+            timestampISO8601
+            message
+          }
+        }
+      `,
+      fetchPolicy: "network-only"
+    });
+
+    this.announcements = response.data.announcements;
   },
 
   sockets: {

@@ -7,16 +7,16 @@
 
 <script>
 export default {
-  props: ['announcement'],
+  props: ["announcement"],
 
   computed: {
     timestring() {
-      const date = new Date(this.announcement.datetime);
+      const date = new Date(this.announcement.timestampISO8601);
 
-      return date.toLocaleTimeString('en-US', {
+      return date.toLocaleTimeString("en-US", {
         hour12: true,
-        hour: '2-digit',
-        minute: '2-digit'
+        hour: "2-digit",
+        minute: "2-digit"
       });
     }
   }
